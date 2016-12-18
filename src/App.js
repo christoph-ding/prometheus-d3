@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+export class WorldDataApp extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div className="WorldDataApp">
+        <h1> Entire World Data App </h1>
+        <CountryList />
       </div>
     );
   }
 }
 
-export default App;
+export class CountryList extends Component {
+  render() {
+    return (
+      <div className="CountryList">
+        <h1> List of Countries </h1>
+      </div>
+    );
+  }
+}
