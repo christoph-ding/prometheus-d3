@@ -27,9 +27,6 @@ const groupByKey = ({list, key}) => {
   return groupedArray;
 }
 
-const sortBy = ({list, key}) => {
-}
-
 // the entire app
 export class WorldDataApp extends Component {
   constructor(props){
@@ -51,7 +48,7 @@ export class WorldDataApp extends Component {
         this.setState({countries: res.data} , 
           () => {
             const groupedData = groupByKey({list: this.state.countries, key: 'region'});
-            this.setState({groupedByRegion: groupedData});            
+            this.setState({groupedByRegion: groupedData});
             }
           );
       });
@@ -67,20 +64,8 @@ export class WorldDataApp extends Component {
   }
 }
 
-// Country List
-const sayHello = (country) => {
-    console.log(country);
-}
-
-const SingleCountry = ({country, action}) => {
-  const actionWithParameters = () => {
-    sayHello(country);
-  };
-
-  return (<li onClick={ actionWithParameters } > {country} </li>);
-}
-
-export class RegionList extends Component {  
+// Lists inside of the App
+export class RegionList extends Component {
   render(){
     return (
       <div className="Region">
@@ -88,7 +73,6 @@ export class RegionList extends Component {
         <ul>
           {
             this.props.regions.map(function(region) {            
-              console.log(region);
               return (
                 <CountryList key={region.name} regionName={region.name} countries={region.data}/>
               )
@@ -104,17 +88,54 @@ export class CountryList extends Component {
   render(){
     return (
       <div className="Country">
-        <h1> {this.props.regionName} </h1>
-          <ul>
+        <h1> {this.props.regionName} </h1>          
+          <ul style={{'list-style': 'none'}}>          
             {              
-              this.props.countries.map(function(country) {                
+              this.props.countries.map(function(country) {      
                 return (
-                  <SingleCountry key={country.name} country={country.name} action={sayHello}/>                  
+                  <SingleCountry key={country.name} country={country} />                                                
                 )
               })
             }
           </ul>
       </div>
     );
+  }
+}
+
+// Countries
+export class SingleCountry extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      infoRevealed: false
+    }
+  }
+
+  getDetails(){
+    const detailKeys = ['name', 'alpha2Code', 'capital', 'region', 'population', 'area', 'timezones', 'languages'];
+    var output = '';
+
+    detailKeys.map((parameter) => {
+      var detailedData;
+      var value;
+      if (parameter === 'timezones' || parameter === 'languages') {
+        value = this.props.country[parameter].length;
+      } else {
+        value = this.props.country[parameter];
+      }
+
+      detailedData = parameter + ': ' + value + ' ';
+      output = output + detailedData;
+    })
+    window.alert(output);
+  }
+
+  render(){
+    return (
+      <div>
+        <li onClick={this.getDetails.bind(this)}> {this.props.country.name} </li>
+      </div>
+    )
   }
 }
