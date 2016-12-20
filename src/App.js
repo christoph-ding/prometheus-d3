@@ -2,47 +2,57 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 
+// munge the data
+
+const groupByKey = ({list, key}) => {
+  const groupedHash = {};
+  // const groupedArray = [];
+
+  list.map((item)=>{
+    const targetKey = item[key] === "" ? 'Not Available': item[key];
+    if (!(item[key] in groupedHash)) {
+      groupedHash[targetKey] = [];      
+    }
+    groupedHash[targetKey].push(item);
+  });
+
+  // for (var keyCategory in groupedHash) {
+  //   groupedArray.push(groupedHash[keyCategory]);
+  // }
+
+  // return groupedArray;
+  return groupedHash;
+}
+
+const sortBy = ({list, key}) => {
+}
+
+// the entire app
 export class WorldDataApp extends Component {
   constructor(props){
     // Pass props to parent class
     super(props);
     // Set initial state
     this.state = {
-      countries: []
+      countries: [],
+      groupedByRegion: []
     }
     this.apiUrl = 'https://restcountries.eu/rest/v1/all'
   }
 
-  sayHello() {
-    console.log('done');
-  }
-
   // get data from api
-  componentWillMount(){            
+  componentWillMount(){
     axios.get(this.apiUrl)
       .then((res) => {
         // Set state with result
-        console.log(res.data);
-        this.setState({countries: res.data},
-          this.sayHello
-        )
+        this.setState({countries: res.data} , 
+          () => {
+            this.groupedByRegion = groupByKey({list: this.state.countries, key: 'region'});
+            console.log(this.groupedByRegion);
+            }
+          );
       });
   }
-
-  // render(){
-  //   return (
-  //     <div className="WorldDataApp">
-  //       <h1> Entire World Data App </h1>
-  //         {              
-  //           this.state.countries.map(function(country) {
-  //           return (
-  //             <h1 key={country.name}> {country.name} </h1>
-  //             )
-  //           })
-  //         }
-  //     </div>
-  //   );
-  // }
 
   render(){
     return (
@@ -52,16 +62,14 @@ export class WorldDataApp extends Component {
       </div>
     );
   }
-
 }
 
+// Country List
 const sayHello = (country) => {
     console.log(country);
 }
 
 const SingleCountry = ({country, action}) => {
-
-  // apparently, this is one of the only canonical ways to do this in React...
   const actionWithParameters = () => {
     sayHello(country);
   };
@@ -69,10 +77,11 @@ const SingleCountry = ({country, action}) => {
   return (<li onClick={ actionWithParameters } > {country} </li>);
 }
 
+// export class RegionList extends Component {
+//   render()
+// }
+
 export class CountryList extends Component {
-  sayHello(){
-    console.log('yooooooooo');
-  }
 
   render(){
     return (
