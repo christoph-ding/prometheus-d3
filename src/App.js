@@ -1,31 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-
-// munge the data
-
-const groupByKey = ({list, key}) => {
-  const groupedHash = {};
-  const groupedArray = [];
-
-  list.map((item)=>{
-    const targetKey = item[key] === "" ? 'Not Available': item[key];
-    if (!(item[key] in groupedHash)) {
-      groupedHash[targetKey] = [];      
-    }
-    groupedHash[targetKey].push(item);
-  });
-
-  for (var keyCategory in groupedHash) {
-    const category = {
-      name: keyCategory,
-      data: groupedHash[keyCategory]
-    }
-    groupedArray.push(category);
-  }
-
-  return groupedArray;
-}
+import * as dataHandling from './dataHandling.js';
 
 // the entire app
 export class WorldDataApp extends Component {
@@ -47,7 +23,7 @@ export class WorldDataApp extends Component {
         // Set state with result
         this.setState({countries: res.data} , 
           () => {
-            const groupedData = groupByKey({list: this.state.countries, key: 'region'});
+            const groupedData = dataHandling.groupByKey({list: this.state.countries, key: 'region'});
             this.setState({groupedByRegion: groupedData});
             }
           );
