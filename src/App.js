@@ -29,19 +29,39 @@ export class WorldDataApp extends Component {
   }
 }
 
+const sayHello = (country) => {
+    console.log(country);
+}
+
+
+const SingleCountry = ({country, action}) => {
+
+  const thing = () => {
+    sayHello(country);
+  };
+
+  // return (<li onClick={ thing } > {country} </li>);
+  return (<li onClick={ thing } > {country} </li>);
+
+}
+
 export class CountryList extends Component {
+  sayHello(){
+    console.log('yooooooooo');
+  }
+
   render(){
     return (
       <div className="CountryList">
         <h1> List of Countries </h1>
           <ul>
-            {
-              this.props.countries.map(function(country) {
+            {              
+              this.props.countries.map(function(country) {                
                 return (
-                  <h1> {country} </h1>
+                  <SingleCountry key={country} country={country} action={sayHello}/>
                 )
               })
-            }          
+            }
           </ul>
       </div>
     );
