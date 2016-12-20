@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 
 const sampleData = ['chris', 'steve', 'joe', 'bob'];
 
@@ -11,12 +12,17 @@ export class WorldDataApp extends Component {
     this.state = {
       countries: sampleData
     }
+    this.apiUrl = 'https://restcountries.eu/rest/v1/all'
   }
 
   // get data from api
-  // componentDidMount(){
-
-  // }
+  componentDidMount(){
+    axios.get(this.apiUrl)
+      .then((res) => {
+        // Set state with result
+        console.log(res);
+      });
+  }
 
   render(){
     return (
@@ -33,16 +39,14 @@ const sayHello = (country) => {
     console.log(country);
 }
 
-
 const SingleCountry = ({country, action}) => {
 
-  const thing = () => {
+  // apparently, this is one of the only canonical ways to do this in React...
+  const actionWithParameters = () => {
     sayHello(country);
   };
 
-  // return (<li onClick={ thing } > {country} </li>);
-  return (<li onClick={ thing } > {country} </li>);
-
+  return (<li onClick={ actionWithParameters } > {country} </li>);
 }
 
 export class CountryList extends Component {
