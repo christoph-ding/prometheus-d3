@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const groupByKey = ({list, key}) => {
   const groupedHash = {};
-  // const groupedArray = [];
+  const groupedArray = [];
 
   list.map((item)=>{
     const targetKey = item[key] === "" ? 'Not Available': item[key];
@@ -16,12 +16,15 @@ const groupByKey = ({list, key}) => {
     groupedHash[targetKey].push(item);
   });
 
-  // for (var keyCategory in groupedHash) {
-  //   groupedArray.push(groupedHash[keyCategory]);
-  // }
+  for (var keyCategory in groupedHash) {
+    const category = {
+      name: keyCategory,
+      data: groupedHash[keyCategory]
+    }
+    groupedArray.push(category);
+  }
 
-  // return groupedArray;
-  return groupedHash;
+  return groupedArray;
 }
 
 const sortBy = ({list, key}) => {
@@ -47,8 +50,8 @@ export class WorldDataApp extends Component {
         // Set state with result
         this.setState({countries: res.data} , 
           () => {
-            this.groupedByRegion = groupByKey({list: this.state.countries, key: 'region'});
-            console.log(this.groupedByRegion);
+            const groupedData = groupByKey({list: this.state.countries, key: 'region'});
+            this.setState({groupedByRegion: groupedData});            
             }
           );
       });
@@ -58,7 +61,7 @@ export class WorldDataApp extends Component {
     return (
       <div className="WorldDataApp">
         <h1> Entire World Data App </h1>
-        <CountryList countries={this.state.countries}/>
+        <RegionList regions={this.state.groupedByRegion}/>
       </div>
     );
   }
@@ -77,21 +80,36 @@ const SingleCountry = ({country, action}) => {
   return (<li onClick={ actionWithParameters } > {country} </li>);
 }
 
-// export class RegionList extends Component {
-//   render()
-// }
-
-export class CountryList extends Component {
-
+export class RegionList extends Component {  
   render(){
     return (
-      <div className="CountryList">
-        <h1> List of Countries </h1>
+      <div className="Region">
+        <h1> Regions </h1>
+        <ul>
+          {
+            this.props.regions.map(function(region) {            
+              console.log(region);
+              return (
+                <CountryList key={region.name} regionName={region.name} countries={region.data}/>
+              )
+            })
+          }
+        </ul>
+      </div>
+    )
+  }
+}
+
+export class CountryList extends Component {
+  render(){
+    return (
+      <div className="Country">
+        <h1> {this.props.regionName} </h1>
           <ul>
             {              
               this.props.countries.map(function(country) {                
                 return (
-                  <SingleCountry key={country.name} country={country.name} action={sayHello}/>
+                  <SingleCountry key={country.name} country={country.name} action={sayHello}/>                  
                 )
               })
             }
